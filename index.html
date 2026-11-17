@@ -1,0 +1,662 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Enlaces legibles</title>
+<meta name="description" content="Crea tu página de enlaces para la bio, legible y accesible desde el principio, y descárgala como un solo archivo HTML. Gratis, sin registro y en tu navegador. Una herramienta de CentaurUX.">
+<meta property="og:title" content="Enlaces legibles: tu página de enlaces para la bio, que se lee bien">
+<meta property="og:description" content="Nombre, foto y enlaces. Eliges estilo y descargas un archivo HTML que puedes subir gratis donde quieras. Sin cuentas ni cuotas.">
+<meta property="og:type" content="website">
+<link rel="icon" href="assets/centaurux-iso-negro.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@75..100,400..900&family=Inter+Tight:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&family=Caveat:wght@500;600&display=swap">
+<link rel="stylesheet" href="centaurux-base.css">
+<style>
+  main { display: grid; gap: 4rem; padding-block: 3rem 5rem; }
+  .cz-lead { max-width: none; }
+  .hero { display: grid; gap: 1rem; }
+  .hero .cz-sticky { justify-self: start; --cz-rotate: -2deg; margin-top: .5rem; }
+
+  .tool { display: grid; gap: 2.5rem; align-items: start; }
+  @media (min-width: 1000px) { .tool { grid-template-columns: minmax(340px, 1fr) minmax(320px, 440px); } .preview { position: sticky; top: 1rem; } }
+  .panel { display: grid; gap: 1.5rem; min-width: 0; }
+  .field { display: grid; gap: .4rem; min-width: 0; }
+  .field > label, legend, .lbl { font-weight: 600; font-size: .95rem; }
+  .hint { font-size: .875rem; color: var(--cz-muted-fg); margin: 0; }
+  textarea, input[type="text"], input[type="url"], select {
+    width: 100%; font: 400 1rem/1.5 var(--cz-font-sans); color: var(--cz-fg);
+    background: var(--cz-card); border: 1px solid var(--cz-input); border-radius: var(--cz-radius);
+    padding: .6rem .75rem; min-height: 44px;
+  }
+  textarea { min-height: 5.5rem; resize: vertical; }
+  textarea:focus-visible, input:focus-visible, select:focus-visible { outline: 2px solid var(--cz-fg); outline-offset: 1px; }
+  .row { display: flex; flex-wrap: wrap; gap: .5rem 1rem; align-items: center; }
+  .two { display: grid; gap: .75rem; grid-template-columns: repeat(auto-fit, minmax(min(100%, 180px), 1fr)); }
+  fieldset { border: 0; border-top: 1px solid var(--cz-rule); margin: 0; padding: 1rem 0 0; display: grid; gap: .75rem; min-width: 0; }
+  legend { padding: 0; float: left; width: 100%; margin-bottom: .2rem; }
+  legend + * { clear: both; }
+  .choices { display: grid; gap: .5rem; grid-template-columns: repeat(auto-fit, minmax(min(100%, 150px), 1fr)); }
+  .choice { position: relative; display: flex; gap: .6rem; align-items: center; padding: .55rem .7rem; border: 1px solid var(--cz-rule); border-radius: var(--cz-radius); background: var(--cz-card); cursor: pointer; font-size: .95rem; min-height: 44px; }
+  .choice:has(input:checked) { border-color: var(--cz-fg); box-shadow: inset 0 0 0 1px var(--cz-fg); }
+  .choice:has(input:focus-visible) { outline: 2px solid var(--cz-fg); outline-offset: 2px; }
+  .choice input { margin: 0; accent-color: var(--cz-fg); }
+  .choice small { display: block; color: var(--cz-muted-fg); font-size: .8rem; }
+  .swatch { width: 30px; height: 30px; flex: none; border-radius: 4px; border: 1px solid var(--cz-border); display: grid; place-items: center; font: 700 .8rem/1 var(--cz-font-display); overflow: hidden; }
+  .swatch--auto { background: linear-gradient(135deg, #f1eee4 50%, #121417 50%); }
+  .pro-row { display: flex; flex-wrap: wrap; gap: .5rem; }
+  .pro-chip { display: inline-flex; gap: .45rem; align-items: center; font: 500 .85rem/1.2 var(--cz-font-sans); color: var(--cz-fg); background: transparent; border: 1px dashed var(--cz-input); border-radius: 999px; padding: .5rem .8rem; cursor: pointer; min-height: 40px; }
+  .pro-chip:hover { border-color: var(--cz-fg); }
+  .pro-chip .tag { font: 500 .62rem/1 var(--cz-font-mono); letter-spacing: .12em; text-transform: uppercase; background: var(--cz-fg); color: var(--cz-bg); border-radius: 2px; padding: .2rem .35rem; }
+
+  .avatar-row { display: flex; gap: 1rem; align-items: center; flex-wrap: wrap; }
+  .avatar-prev { width: 72px; height: 72px; border-radius: 50%; object-fit: cover; border: 1px solid var(--cz-rule); background: var(--cz-muted); flex: none; }
+  .file-btn { position: relative; }
+  .file-btn input { position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%; }
+  .file-btn:has(input:focus-visible) { outline: 2px solid var(--cz-fg); outline-offset: 2px; }
+
+  .links { list-style: none; margin: 0; padding: 0; display: grid; gap: .75rem; counter-reset: l; }
+  .link-item { display: grid; gap: .6rem; padding: 1rem; border: 1px solid var(--cz-rule); border-radius: var(--cz-radius); background: var(--cz-card); }
+  .link-head { display: flex; flex-wrap: wrap; gap: .5rem; align-items: center; justify-content: space-between; }
+  .link-num { font: 500 .72rem/1 var(--cz-font-mono); letter-spacing: .12em; text-transform: uppercase; color: var(--cz-muted-fg); }
+  .mini { font: 500 .85rem/1 var(--cz-font-sans); color: var(--cz-fg); background: transparent; border: 1px solid var(--cz-input); border-radius: 999px; padding: .45rem .75rem; cursor: pointer; min-height: 36px; }
+  .mini:hover:not(:disabled) { border-color: var(--cz-fg); }
+  .mini:disabled { opacity: .45; cursor: default; }
+  .mini:focus-visible, .cz-btn:focus-visible, .pro-chip:focus-visible { outline: 2px solid var(--cz-fg); outline-offset: 2px; }
+  .link-tools { display: flex; gap: .4rem; flex-wrap: wrap; }
+
+  .preview { display: grid; gap: 1rem; min-width: 0; }
+  .preview-head { display: grid; gap: .75rem; }
+  .actions { display: flex; flex-wrap: wrap; gap: .5rem; }
+  .cz-btn--big { padding: .75rem 1.25rem; font-size: .95rem; }
+  .phone { border: 1px solid var(--cz-border); border-radius: 22px; padding: 10px; background: var(--cz-card); max-width: 400px; width: 100%; }
+  .phone iframe { display: block; width: 100%; height: 640px; border: 0; border-radius: 14px; background: #fff; }
+  .avisos { display: grid; gap: .5rem; margin: 0; padding: 0; list-style: none; }
+  .avisos li { display: grid; grid-template-columns: auto 1fr; gap: .6rem; align-items: baseline; padding: .65rem .8rem; border: 1px solid var(--cz-rule); border-radius: var(--cz-radius); background: var(--cz-card); font-size: .925rem; }
+  .avisos li::before { content: ""; width: 8px; height: 8px; border-radius: 2px; background: var(--cz-fg); transform: translateY(-1px); }
+  .avisos li.ok::before { background: var(--cz-violet); border-radius: 999px; }
+  .status { font-size: .9rem; min-height: 1.4em; margin: 0; }
+
+  .how { display: grid; gap: 1rem; grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr)); }
+  .how .cz-card { padding: 1.25rem; display: grid; gap: .5rem; align-content: start; }
+  .how .cz-card:hover { transform: none; box-shadow: none; border-color: var(--cz-rule); }
+  .how .num { font: 500 .75rem/1 var(--cz-font-mono); letter-spacing: .12em; color: var(--cz-muted-fg); }
+  .how ol { margin: 0; padding-left: 1.2rem; display: grid; gap: .3rem; }
+  .pro { display: grid; gap: 1rem; padding: 1.5rem; border: 1px solid var(--cz-border); background: var(--cz-card); border-radius: var(--cz-radius); }
+  .pro ul { margin: 0; padding-left: 1.2rem; display: grid; gap: .35rem; }
+  .pro-ask { font-weight: 600; font-size: 1.05rem; margin: 0; }
+  .pro-actions { display: flex; flex-wrap: wrap; gap: .5rem; }
+  .thanks { padding: .75rem 1rem; background: var(--cz-muted); border-radius: var(--cz-radius); }
+  .pro-contact { display: flex; flex-wrap: wrap; gap: .25rem .75rem; align-items: center; margin: 0; }
+  .notes { display: grid; gap: .75rem; font-size: .925rem; color: var(--cz-muted-fg); border-top: 1px solid var(--cz-rule); padding-top: 1.5rem; }
+  .notes a, .notes strong { color: var(--cz-fg); }
+  .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+</style>
+</head>
+<body>
+
+<header class="cz-header cz-dark">
+  <div class="cz-wrap cz-header__inner">
+    <a class="cz-wordmark" href="https://centaurux.es" target="_blank" rel="noopener" aria-label="CentaurUX, ir a la web" data-track="enlaces-ir-centaurux">
+      <img src="assets/centaurux-iso-blanco.png" alt="" width="28" height="28">
+      <span>CentaurUX</span>
+    </a>
+    <span class="cz-header__tag">Research, redesigned.</span>
+  </div>
+</header>
+
+<main class="cz-wrap">
+  <section class="hero">
+    <span class="cz-label">CentaurUX · Lab · Enlaces legibles</span>
+    <h1 class="cz-display-xl">Tu página de enlaces para la bio, <span class="cz-marker">legible</span> desde el principio</h1>
+    <p class="cz-lead">Escribe tu nombre, una frase sobre ti y tus enlaces. Elige un estilo y descarga un único archivo HTML que puedes subir gratis donde quieras. Sin cuentas, sin cuotas y sin anuncios. Todo pasa en tu navegador.</p>
+    <p class="cz-sticky">Tu página es tuya: un archivo, sin plataforma</p>
+  </section>
+
+  <section class="tool" aria-label="Crear tu página">
+    <form class="panel" id="form" onsubmit="return false" novalidate>
+      <fieldset>
+        <legend>Sobre ti</legend>
+        <div class="field">
+          <label for="nombre">Nombre</label>
+          <input type="text" id="nombre" autocomplete="name" placeholder="Ana Pérez">
+        </div>
+        <div class="field">
+          <label for="bio">Una frase sobre ti <span class="hint">(opcional)</span></label>
+          <textarea id="bio" aria-describedby="bioAyuda" placeholder="UX Researcher. Escribo sobre investigación con personas."></textarea>
+          <p class="hint" id="bioAyuda"><span id="bioCuenta">0</span> de 160 caracteres recomendados.</p>
+        </div>
+        <div class="field">
+          <span class="lbl" id="fotoLbl">Foto <span class="hint">(opcional)</span></span>
+          <div class="avatar-row">
+            <img class="avatar-prev" id="fotoPrev" alt="" hidden>
+            <span class="cz-btn cz-btn--outline file-btn"><span id="fotoTxt">Elegir foto</span><input type="file" id="foto" accept="image/*" aria-labelledby="fotoLbl fotoTxt"></span>
+            <button type="button" class="mini" id="fotoQuitar" hidden>Quitar foto</button>
+          </div>
+          <p class="hint">Se reduce a 320 px y se guarda dentro del archivo. No se sube a ningún sitio.</p>
+        </div>
+        <div class="field" id="altField" hidden>
+          <label for="alt">Descripción de la foto</label>
+          <input type="text" id="alt" aria-describedby="altAyuda" placeholder="Ana sonriendo, con gafas y camisa azul">
+          <p class="hint" id="altAyuda">Si la dejas vacía, la foto se marca como decorativa: los lectores de pantalla la saltan, porque tu nombre ya está al lado.</p>
+        </div>
+      </fieldset>
+
+      <fieldset>
+        <legend>Tus enlaces</legend>
+        <p class="hint">Escribe en el texto adónde lleva cada enlace: «Mi boletín sobre UX» se entiende mejor que «Pincha aquí».</p>
+        <ol class="links" id="links" aria-label="Lista de enlaces"></ol>
+        <div class="row">
+          <button type="button" class="cz-btn cz-btn--outline" id="anadir">Añadir enlace <span aria-hidden="true">+</span></button>
+          <button type="button" class="mini" id="ejemplo">Probar con un ejemplo</button>
+        </div>
+        <p class="sr-only" id="anuncio" aria-live="polite"></p>
+      </fieldset>
+
+      <fieldset>
+        <legend>Estilo</legend>
+        <div class="choices" id="temas" role="radiogroup" aria-label="Colores"></div>
+        <div class="choices">
+          <label class="choice"><input type="radio" name="alin" value="izq" checked><span>Texto a la izquierda<small>Se lee mejor</small></span></label>
+          <label class="choice"><input type="radio" name="alin" value="centro"><span>Texto centrado<small>Más clásico</small></span></label>
+        </div>
+        <div class="two">
+          <div class="field">
+            <label for="idioma">Idioma de tu página</label>
+            <select id="idioma">
+              <option value="es">Español</option>
+              <option value="en">Inglés</option>
+              <option value="ca">Catalán</option>
+              <option value="eu">Euskera</option>
+              <option value="gl">Gallego</option>
+              <option value="pt">Portugués</option>
+              <option value="fr">Francés</option>
+            </select>
+          </div>
+        </div>
+        <p class="hint">El idioma sirve para que los lectores de pantalla pronuncien bien tu página.</p>
+      </fieldset>
+
+      <fieldset>
+        <legend>Pro</legend>
+        <div class="pro-row">
+          <button type="button" class="pro-chip" data-pro="enlaces-pro-temas"><span class="tag">Pro</span> Más estilos y tus colores</button>
+          <button type="button" class="pro-chip" data-pro="enlaces-pro-dominio"><span class="tag">Pro</span> Ayuda con tu dominio propio</button>
+          <button type="button" class="pro-chip" data-pro="enlaces-pro-quitar-marca"><span class="tag">Pro</span> Quitar «Hecho con»</button>
+          <button type="button" class="pro-chip" data-pro="enlaces-pro-estadisticas"><span class="tag">Pro</span> Ver clics sin cookies</button>
+        </div>
+      </fieldset>
+    </form>
+
+    <section class="preview" aria-labelledby="vistaTitulo">
+      <div class="preview-head">
+        <h2 class="cz-section-title" id="vistaTitulo"><span>Vista previa</span></h2>
+        <div class="actions">
+          <button type="button" class="cz-btn cz-btn--big" id="descargar">Descargar HTML <span class="cz-arrow" aria-hidden="true">↓</span></button>
+          <button type="button" class="cz-btn cz-btn--outline cz-btn--big" id="copiar">Copiar código</button>
+        </div>
+        <p class="status" id="estado" role="status" aria-live="polite"></p>
+      </div>
+      <div class="phone"><iframe id="vista" title="Vista previa de tu página de enlaces" sandbox="allow-same-origin"></iframe></div>
+      <ul class="avisos" id="avisos" aria-label="Avisos sobre tu página"></ul>
+      <div class="field">
+        <span class="lbl" id="abrirLbl">¿Ya descargaste tu página antes?</span>
+        <div class="row">
+          <span class="cz-btn cz-btn--outline file-btn"><span id="abrirTxt">Abrir para editarla</span><input type="file" id="abrir" accept=".html,.htm,text/html" aria-labelledby="abrirLbl abrirTxt"></span>
+        </div>
+        <p class="hint">El archivo guarda tus datos dentro, así que puedes volver a cargarlo aquí y cambiar lo que quieras.</p>
+      </div>
+    </section>
+  </section>
+
+  <section style="display:grid;gap:1.25rem" aria-labelledby="porqueTitulo">
+    <h2 class="cz-section-title" id="porqueTitulo">Qué lleva tu página</h2>
+    <div class="how">
+      <article class="cz-card"><span class="num">01</span><h3 class="cz-display-md">Botones grandes y claros</h3><p>Cada enlace es un botón de 48 px de alto o más, con borde visible, texto grande y foco de teclado bien marcado.</p></article>
+      <article class="cz-card"><span class="num">02</span><h3 class="cz-display-md">Contraste alto</h3><p>Todos los estilos tienen un contraste de texto de 7:1 o más. Te enseñamos la cifra de cada uno.</p></article>
+      <article class="cz-card"><span class="num">03</span><h3 class="cz-display-md">Bien construida por dentro</h3><p>Idioma declarado, encabezado, lista de enlaces, texto alternativo y respeto al modo oscuro y a quien reduce el movimiento. Sin JavaScript ni rastreadores.</p></article>
+    </div>
+  </section>
+
+  <section style="display:grid;gap:1.25rem" aria-labelledby="subirTitulo">
+    <h2 class="cz-section-title" id="subirTitulo">Cómo publicarla gratis</h2>
+    <p>Descarga el archivo y guárdalo con el nombre <code>index.html</code>. Después elige un sitio:</p>
+    <div class="how">
+      <article class="cz-card"><span class="num">A</span><h3 class="cz-display-md">GitHub Pages</h3><ol><li>Crea un repositorio público.</li><li>Sube <code>index.html</code>.</li><li>En Settings, Pages, elige la rama principal.</li></ol><p class="hint">Tu dirección será usuario.github.io/repositorio.</p></article>
+      <article class="cz-card"><span class="num">B</span><h3 class="cz-display-md">Netlify Drop</h3><ol><li>Pon el archivo en una carpeta.</li><li>Arrástrala a app.netlify.com/drop.</li><li>Crea la cuenta gratis para que no caduque.</li></ol></article>
+      <article class="cz-card"><span class="num">C</span><h3 class="cz-display-md">Cloudflare Pages</h3><ol><li>Crea un proyecto con subida directa.</li><li>Sube la carpeta con el archivo.</li><li>Te da una dirección .pages.dev.</li></ol></article>
+    </div>
+    <p class="hint">Después, pega la dirección en la bio de tu red social. ¿Quieres usar tu propio dominio, como anaperez.com? Es lo que más cuesta la primera vez, y es parte de Pro.</p>
+  </section>
+
+  <section class="pro" id="pro" aria-labelledby="proTitulo" tabindex="-1">
+    <h2 id="proTitulo" class="cz-display-md">Enlaces legibles Pro</h2>
+    <p class="pro-ask">¿Pagarías una cantidad simbólica por estas mejoras?</p>
+    <ul>
+      <li>Más estilos y tus propios colores, con aviso si el contraste se queda corto.</li>
+      <li>Ayuda paso a paso para poner tu página en tu dominio propio.</li>
+      <li>Quitar el «Hecho con Enlaces legibles» del pie.</li>
+      <li>Ver cuántos clics recibe cada enlace, sin cookies.</li>
+    </ul>
+    <div class="pro-actions">
+      <button type="button" class="cz-btn" id="proBtn">Me interesa <span class="cz-arrow" aria-hidden="true">→</span></button>
+      <a class="cz-btn cz-btn--outline" href="https://ko-fi.com/jrebate" target="_blank" rel="noopener" data-track="enlaces-kofi-pro">Apóyalo ya en Ko-fi</a>
+    </div>
+    <div class="thanks" id="proGracias" hidden role="status">Gracias, lo tendremos en cuenta. Tu interés nos ayuda a decidir qué construir. Mientras tanto, la página es gratis.</div>
+    <p class="pro-contact">¿Te interesa mucho o echas algo en falta? Escríbeme, soy Jorge: <span class="cz-creditos__addr">jrebateserrano@gmail.com</span> <button type="button" class="cz-creditos__copy" data-cz-copy="jrebateserrano@gmail.com" data-track="enlaces-contacto-email">Copiar correo</button></p>
+  </section>
+
+  <section class="notes" aria-label="Notas">
+    <p>Los avisos son orientativos. Buen contraste, botones grandes y un código ordenado ayudan, pero no garantizan que una página sea accesible para todo el mundo ni certifican nada. Revisa también que los textos de tus enlaces se entiendan.</p>
+    <p>¿Haces carruseles para LinkedIn? Prueba <a href="https://jrebate.github.io/carrusel_accesible/" target="_blank" rel="noopener" data-track="enlaces-ir-carrusel">Carrusel legible</a>. ¿Te resulta útil? Puedes <a href="https://ko-fi.com/jrebate" target="_blank" rel="noopener" data-track="enlaces-kofi-pie">invitarnos a un café en Ko-fi</a>.</p>
+    <p><strong>Privacidad:</strong> tus datos y tu foto no salen de tu navegador. Solo guardamos un borrador en este navegador para que no lo pierdas al recargar. La página que descargas no lleva ningún contador. En esta web contamos visitas y clics con <a href="https://www.goatcounter.com/" target="_blank" rel="noopener">GoatCounter</a>, que no usa cookies ni guarda datos personales.</p>
+  </section>
+</main>
+
+<footer class="cz-footer">
+  <div class="cz-wrap cz-footer__inner">
+    <span class="cz-label">Human + AI = Centaur</span>
+    <a class="cz-wordmark" href="https://centaurux.es" target="_blank" rel="noopener">
+      <img class="cz-logo--light-bg" src="assets/centaurux-iso-negro.png" alt="" width="24" height="24">
+      <img class="cz-logo--dark-bg" src="assets/centaurux-iso-blanco.png" alt="" width="24" height="24">
+      <span class="cz-label" style="color:var(--cz-fg)">CentaurUX</span>
+    </a>
+    <div class="cz-footer__creditos">
+    <div class="cz-creditos">
+      <p class="cz-creditos__cta"><img class="cz-logo--light-bg" src="assets/centaurux-iso-negro.png" alt="" width="22" height="22"><img class="cz-logo--dark-bg" src="assets/centaurux-iso-blanco.png" alt="" width="22" height="22"><span>Ponte al día con la IA en UX, a tu ritmo y sin FOMO, en <a href="https://www.shiftr.pro/" target="_blank" rel="noopener">Shift+R</a> y <a href="https://centaurux.es" target="_blank" rel="noopener">CentaurUX</a></span></p>
+      <p>Creado por <b>Jorge Rebate Serrano</b> · © 2026, todos los derechos reservados. Puedes insertar esta herramienta en tu web citando la autoría y sin cobrar por ella (<a href="https://github.com/jrebate/enlaces_accesibles/blob/HEAD/LICENSE.md" target="_blank" rel="noopener">ver licencia</a>). Las páginas que crees con ella son tuyas.</p>
+      <p class="cz-creditos__mail">Correo: <span class="cz-creditos__addr">jrebateserrano@gmail.com</span> <button type="button" class="cz-creditos__copy" data-cz-copy="jrebateserrano@gmail.com">Copiar correo</button></p>
+      <p>LinkedIn: <a href="https://www.linkedin.com/in/jrebateserrano/" target="_blank" rel="noopener">Jorge Rebate Serrano</a></p>
+    </div>
+    </div>
+  </div>
+</footer>
+
+<script>
+(function () {
+  "use strict";
+
+  /* ---------- Medición (GoatCounter) ---------- */
+  function track(name, title) {
+    try { if (window.goatcounter && window.goatcounter.count) window.goatcounter.count({ path: name, title: title || name, event: true }); } catch (e) {}
+  }
+  document.addEventListener("click", function (e) {
+    var a = e.target.closest("[data-track]");
+    if (a) track(a.getAttribute("data-track"));
+  });
+
+  /* ---------- Copiar correo ---------- */
+  document.querySelectorAll("[data-cz-copy]").forEach(function (b) {
+    b.addEventListener("click", function () {
+      var t = b.getAttribute("data-cz-copy"), label = b.textContent;
+      function ok() { b.textContent = "Copiado"; setTimeout(function () { b.textContent = label; }, 1800); }
+      function sel() { var r = document.createRange(); r.selectNodeContents(b.previousElementSibling); var s = getSelection(); s.removeAllRanges(); s.addRange(r); b.textContent = "Seleccionado"; }
+      try { navigator.clipboard.writeText(t).then(ok, sel); } catch (e) { sel(); }
+    });
+  });
+
+  /* ---------- Constantes ---------- */
+  var SITE = "https://jrebate.github.io/enlaces_accesibles/";
+  var THEMES = {
+    auto:   { name: "Automático", sub: "Claro u oscuro según el móvil", light: "crema", dark: "carbon" },
+    crema:  { name: "Crema",  bg: "#f1eee4", fg: "#121417", card: "#fbfaf5", muted: "#464a51", line: "#121417" },
+    carbon: { name: "Carbón", bg: "#121417", fg: "#f4f2ea", card: "#1d2026", muted: "#bfc3c9", line: "#f4f2ea" },
+    blanco: { name: "Blanco", bg: "#ffffff", fg: "#111111", card: "#ffffff", muted: "#4a4a4a", line: "#111111" },
+    noche:  { name: "Noche",  bg: "#0b1020", fg: "#f2f4f8", card: "#161c30", muted: "#c3c9d6", line: "#d9ec39" }
+  };
+
+  function lum(hex) {
+    var n = parseInt(hex.slice(1), 16), c = [(n >> 16) & 255, (n >> 8) & 255, n & 255].map(function (v) { v /= 255; return v <= 0.04045 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4); });
+    return 0.2126 * c[0] + 0.7152 * c[1] + 0.0722 * c[2];
+  }
+  function ratio(a, b) { var x = lum(a), y = lum(b); return (Math.max(x, y) + 0.05) / (Math.min(x, y) + 0.05); }
+  function fmtRatio(r) { return (Math.floor(r * 10) / 10).toFixed(1).replace(".", ",") + ":1"; }
+  function minRatio(k) {
+    var t = THEMES[k];
+    if (t.light) return Math.min(minRatio(t.light), minRatio(t.dark));
+    return Math.min(ratio(t.fg, t.card), ratio(t.muted, t.bg), ratio(t.fg, t.bg));
+  }
+
+  /* ---------- Estado ---------- */
+  var $ = function (id) { return document.getElementById(id); };
+  var state = { name: "", bio: "", photo: "", alt: "", links: [{ label: "", url: "", note: "" }], theme: "auto", align: "izq", lang: "es" };
+
+  var KEY = "enlaces-legibles-borrador";
+  function save() { try { localStorage.setItem(KEY, JSON.stringify(state)); } catch (e) {} }
+  function load(d) {
+    if (!d || typeof d !== "object") return;
+    ["name", "bio", "photo", "alt", "theme", "align", "lang"].forEach(function (k) { if (typeof d[k] === "string") state[k] = d[k]; });
+    if (!THEMES[state.theme]) state.theme = "auto";
+    if (Array.isArray(d.links)) state.links = d.links.filter(function (l) { return l && typeof l === "object"; }).map(function (l) { return { label: String(l.label || ""), url: String(l.url || ""), note: String(l.note || "") }; });
+    if (!state.links.length) state.links = [{ label: "", url: "", note: "" }];
+  }
+  try { load(JSON.parse(localStorage.getItem(KEY) || "null")); } catch (e) {}
+
+  /* ---------- Temas ---------- */
+  var temas = $("temas");
+  Object.keys(THEMES).forEach(function (k) {
+    var t = THEMES[k], l = document.createElement("label");
+    l.className = "choice";
+    var sw = t.light ? '<span class="swatch swatch--auto" aria-hidden="true"></span>'
+      : '<span class="swatch" aria-hidden="true" style="background:' + t.bg + ';color:' + t.fg + ';border-color:' + t.line + '">Aa</span>';
+    l.innerHTML = '<input type="radio" name="tema" value="' + k + '">' + sw + '<span>' + t.name + '<small>Contraste ' + fmtRatio(minRatio(k)) + ' o más</small></span>';
+    temas.appendChild(l);
+  });
+
+  /* ---------- URLs ---------- */
+  function normUrl(raw) {
+    var u = raw.trim();
+    if (!u) return { url: "", ok: false, empty: true };
+    if (/^(https?:|mailto:|tel:)/i.test(u)) {
+      try { new URL(u); return { url: u, ok: true, http: /^http:/i.test(u) }; } catch (e) { return { url: "", ok: false }; }
+    }
+    if (/^[a-z][a-z0-9+.-]*:/i.test(u) && !/^[^:]+:\d/.test(u)) return { url: "", ok: false, bad: true };
+    if (/^[^\s@/]+@[^\s@/]+\.[^\s@/]+$/.test(u)) return { url: "mailto:" + u, ok: true, fixed: "mailto" };
+    if (/^\+?[\d\s().-]{7,}$/.test(u)) return { url: "tel:" + u.replace(/[^\d+]/g, ""), ok: true, fixed: "tel" };
+    if (/^@[\w.]+$/.test(u)) return { url: "", ok: false, handle: true };
+    try { var x = new URL("https://" + u.replace(/^\/+/, "")); if (!/\./.test(x.hostname)) throw 0; return { url: x.href, ok: true, fixed: "https" }; } catch (e) { return { url: "", ok: false }; }
+  }
+
+  /* ---------- HTML generado ---------- */
+  function esc(s) { return String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;"); }
+  function vars(t) { return "--bg:" + t.bg + ";--fg:" + t.fg + ";--card:" + t.card + ";--muted:" + t.muted + ";--line:" + t.line + ";"; }
+
+  function generate(forPreview) {
+    var t = THEMES[state.theme] || THEMES.auto;
+    var name = state.name.trim() || "Tu nombre";
+    var bio = state.bio.trim();
+    var colors = t.light
+      ? ":root{" + vars(THEMES[t.light]) + "color-scheme:light dark}\n@media (prefers-color-scheme:dark){:root{" + vars(THEMES[t.dark]) + "}}"
+      : ":root{" + vars(t) + "color-scheme:" + (lum(t.bg) < 0.2 ? "dark" : "light") + "}";
+    var center = state.align === "centro";
+    var items = state.links.map(function (l) {
+      var n = normUrl(l.url), label = l.label.trim();
+      if (!n.ok || !label) return "";
+      return '    <li><a class="link" href="' + esc(n.url) + '">' + esc(label) + (l.note.trim() ? '<span class="note">' + esc(l.note.trim()) + "</span>" : "") + "</a></li>";
+    }).filter(Boolean);
+    var data = JSON.stringify({ v: 1, name: state.name, bio: state.bio, photo: state.photo, alt: state.alt, links: state.links, theme: state.theme, align: state.align, lang: state.lang }).replace(/</g, "\\u003c");
+    var desc = bio || ("Enlaces de " + name);
+    return [
+      "<!doctype html>",
+      '<html lang="' + esc(state.lang) + '">',
+      "<head>",
+      '<meta charset="utf-8">',
+      '<meta name="viewport" content="width=device-width, initial-scale=1">',
+      "<title>" + esc(name) + "</title>",
+      '<meta name="description" content="' + esc(desc) + '">',
+      '<meta property="og:title" content="' + esc(name) + '">',
+      '<meta property="og:description" content="' + esc(desc) + '">',
+      '<meta name="generator" content="Enlaces legibles (' + SITE + ')">',
+      "<style>",
+      colors,
+      "*{box-sizing:border-box}",
+      "html{-webkit-text-size-adjust:100%;text-size-adjust:100%}",
+      "body{margin:0;background:var(--bg);color:var(--fg);font:400 1.125rem/1.55 system-ui,-apple-system,\"Segoe UI\",Roboto,\"Helvetica Neue\",Arial,sans-serif}",
+      "main,footer{max-width:34rem;margin:0 auto;padding:3rem 1.25rem 1.5rem" + (center ? ";text-align:center" : "") + "}",
+      ".avatar{width:112px;height:112px;border-radius:50%;object-fit:cover;display:block;margin:0 " + (center ? "auto" : "0") + " 1.25rem;border:2px solid var(--line)}",
+      "h1{font-size:clamp(1.75rem,7vw,2.25rem);line-height:1.15;margin:0 0 .5rem;font-weight:800;letter-spacing:-.01em}",
+      ".bio{margin:0 " + (center ? "auto" : "0") + " 2rem;color:var(--muted);max-width:60ch}",
+      "ul{list-style:none;margin:" + (bio ? "0" : "1.5rem 0 0") + ";padding:0;display:grid;gap:.85rem}",
+      ".link{display:block;min-height:3rem;padding:.85rem 1.15rem;border:2px solid var(--line);border-radius:.75rem;background:var(--card);color:var(--fg);text-decoration:none;font-weight:650;line-height:1.35;overflow-wrap:anywhere}",
+      ".link:hover{text-decoration:underline;text-decoration-thickness:2px;text-underline-offset:.2em}",
+      ".link:focus-visible{outline:3px solid var(--fg);outline-offset:3px}",
+      ".note{display:block;font-weight:400;font-size:1rem;color:var(--muted);margin-top:.2rem}",
+      "footer{padding-top:1rem;padding-bottom:3rem;font-size:.95rem;color:var(--muted)}",
+      "footer a{color:inherit;text-underline-offset:.2em}",
+      "footer a:focus-visible{outline:3px solid var(--fg);outline-offset:3px}",
+      "@media (prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;transition:none!important;animation:none!important}}",
+      "@media (forced-colors:active){.link{border-color:LinkText}}",
+      "</style>",
+      "</head>",
+      "<body>",
+      "<main>",
+      state.photo ? '  <img class="avatar" src="' + esc(state.photo) + '" alt="' + esc(state.alt.trim()) + '" width="112" height="112">' : "",
+      "  <h1>" + esc(name) + "</h1>",
+      bio ? '  <p class="bio">' + esc(bio).replace(/\n+/g, "<br>") + "</p>" : "",
+      items.length ? '  <nav aria-label="' + (state.lang === "en" ? "Links" : "Enlaces") + '">\n  <ul>\n' + items.join("\n") + "\n  </ul>\n  </nav>" : "",
+      "</main>",
+      '<footer><p>Hecho con <a href="' + SITE + '">Enlaces legibles</a></p></footer>',
+      '<script type="application/json" id="enlaces-legibles-datos">' + data + "<\/script>",
+      "</body>",
+      "</html>"
+    ].filter(function (x) { return x !== ""; }).join("\n");
+  }
+
+  /* ---------- Avisos ---------- */
+  var VAGOS = /^(aqu[ií]|haz clic aqu[ií]|clic aqu[ií]|click aqu[ií]|pincha aqu[ií]|pulsa aqu[ií]|click|clic|click here|here|link|enlace|m[aá]s|ver m[aá]s|leer m[aá]s|m[aá]s info|info|web|url)\.?$/i;
+  var EMOJI = /^\p{Extended_Pictographic}/u;
+  function avisos() {
+    var out = [], labels = {}, ok = 0;
+    if (!state.name.trim()) out.push("Escribe tu nombre: será el título de la página y lo primero que lean los buscadores y los lectores de pantalla.");
+    if (state.bio.trim().length > 160) out.push("Tu frase tiene " + state.bio.trim().length + " caracteres. Con menos de 160 se lee de un vistazo y cabe en la vista previa al compartir.");
+    state.links.forEach(function (l, i) {
+      var n = i + 1, label = l.label.trim(), u = normUrl(l.url);
+      if (!label && u.empty) return;
+      if (!label) { out.push("Al enlace " + n + " le falta el texto. Sin texto no se incluye en la página."); return; }
+      if (u.empty) { out.push("A «" + label + "» le falta la dirección. Sin dirección no se incluye en la página."); return; }
+      if (u.handle) { out.push("«" + l.url.trim() + "» es un nombre de usuario, no una dirección. Pega el enlace completo de tu perfil."); return; }
+      if (!u.ok) { out.push("La dirección de «" + label + "» no parece válida. Revisa que empiece por https://."); return; }
+      ok++;
+      if (u.fixed === "https") out.push("He añadido https:// a la dirección de «" + label + "».");
+      if (u.http) out.push("«" + label + "» usa http://. Si la web admite https://, cámbialo: algunos navegadores avisan de que no es segura.");
+      if (VAGOS.test(label)) out.push("«" + label + "» no dice adónde lleva. Mucha gente navega saltando de enlace en enlace, y oirá solo ese texto. Prueba con algo como «Mi portfolio de UX».");
+      if (/^(https?:\/\/|www\.)/i.test(label)) out.push("El texto del enlace " + n + " es una dirección. Un lector de pantalla la deletrea entera; mejor un nombre corto, como «Mi web».");
+      if (EMOJI.test(label)) out.push("«" + label + "» empieza con un emoji. Los lectores de pantalla dicen su nombre en voz alta antes del texto; si lo quieres, ponlo al final.");
+      var letters = label.replace(/[^\p{L}]/gu, "");
+      if (letters.length > 5 && letters === letters.toUpperCase()) out.push("«" + label + "» está en mayúsculas. Cuesta más de leer y algunos lectores de pantalla lo deletrean. Mejor en minúsculas con mayúscula inicial.");
+      var k = label.toLowerCase();
+      if (labels[k]) out.push("Hay dos enlaces con el texto «" + label + "». Si llevan a sitios distintos, dales textos distintos.");
+      labels[k] = true;
+    });
+    if (!ok) out.push("Añade al menos un enlace con texto y dirección.");
+    if (ok > 12) out.push("Tienes " + ok + " enlaces. A partir de 8 o 10 cuesta encontrar el que se busca; deja arriba los más importantes.");
+    if (state.photo && !state.alt.trim()) out.push({ ok: true, t: "La foto va como decorativa. Si dice algo importante de ti, descríbela." });
+    if (!out.filter(function (a) { return typeof a === "string"; }).length) out.push({ ok: true, t: "Todo en orden: " + ok + (ok === 1 ? " enlace" : " enlaces") + ", botones de 48 px o más y contraste de " + fmtRatio(minRatio(state.theme)) + " o más." });
+    return out;
+  }
+
+  /* ---------- Formulario de enlaces ---------- */
+  var elLinks = $("links"), anuncio = $("anuncio");
+  function say(t) { anuncio.textContent = ""; setTimeout(function () { anuncio.textContent = t; }, 50); }
+  function nombreEnlace(i) { var l = state.links[i].label.trim(); return l ? "«" + l + "»" : "el enlace " + (i + 1); }
+
+  function renderLinks(focus) {
+    elLinks.innerHTML = "";
+    state.links.forEach(function (l, i) {
+      var li = document.createElement("li");
+      li.className = "link-item";
+      var n = state.links.length;
+      li.innerHTML =
+        '<div class="link-head"><span class="link-num" id="ln' + i + '">Enlace ' + (i + 1) + '</span>' +
+        '<span class="link-tools">' +
+        '<button type="button" class="mini" data-act="up" data-i="' + i + '"' + (i === 0 ? " disabled" : "") + '>Subir<span class="sr-only"> ' + esc(nombreEnlace(i)) + '</span></button>' +
+        '<button type="button" class="mini" data-act="down" data-i="' + i + '"' + (i === n - 1 ? " disabled" : "") + '>Bajar<span class="sr-only"> ' + esc(nombreEnlace(i)) + '</span></button>' +
+        '<button type="button" class="mini" data-act="del" data-i="' + i + '">Quitar<span class="sr-only"> ' + esc(nombreEnlace(i)) + '</span></button>' +
+        "</span></div>" +
+        '<div class="two">' +
+        '<div class="field"><label for="lt' + i + '">Texto del enlace</label><input type="text" id="lt' + i + '" data-k="label" data-i="' + i + '" placeholder="Mi portfolio"></div>' +
+        '<div class="field"><label for="lu' + i + '">Dirección</label><input type="url" id="lu' + i + '" data-k="url" data-i="' + i + '" inputmode="url" autocomplete="url" placeholder="https://"></div>' +
+        "</div>" +
+        '<div class="field"><label for="lnote' + i + '">Detalle <span class="hint">(opcional)</span></label><input type="text" id="lnote' + i + '" data-k="note" data-i="' + i + '" placeholder="Una línea que lo explique"></div>';
+      elLinks.appendChild(li);
+      li.querySelector('[data-k="label"]').value = l.label;
+      li.querySelector('[data-k="url"]').value = l.url;
+      li.querySelector('[data-k="note"]').value = l.note;
+    });
+    if (focus) { var f = elLinks.querySelector(focus); if (f) f.focus(); }
+  }
+
+  elLinks.addEventListener("input", function (e) {
+    var k = e.target.getAttribute("data-k"); if (!k) return;
+    state.links[+e.target.getAttribute("data-i")][k] = e.target.value;
+    schedule();
+  });
+  elLinks.addEventListener("change", function (e) {
+    if (e.target.getAttribute("data-k") === "label") {
+      var i = +e.target.getAttribute("data-i");
+      elLinks.querySelectorAll('[data-i="' + i + '"] .sr-only').forEach(function (s) { s.textContent = " " + nombreEnlace(i); });
+    }
+  });
+  elLinks.addEventListener("click", function (e) {
+    var b = e.target.closest("[data-act]"); if (!b) return;
+    var i = +b.getAttribute("data-i"), act = b.getAttribute("data-act"), L = state.links, nm = nombreEnlace(i);
+    if (act === "up" && i > 0) { L.splice(i - 1, 0, L.splice(i, 1)[0]); renderLinks('[data-act="' + (i - 1 === 0 ? "down" : "up") + '"][data-i="' + (i - 1) + '"]'); say(nm + " sube a la posición " + i + "."); }
+    else if (act === "down" && i < L.length - 1) { L.splice(i + 1, 0, L.splice(i, 1)[0]); renderLinks('[data-act="' + (i + 1 === L.length - 1 ? "up" : "down") + '"][data-i="' + (i + 1) + '"]'); say(nm + " baja a la posición " + (i + 2) + "."); }
+    else if (act === "del") {
+      L.splice(i, 1);
+      if (!L.length) L.push({ label: "", url: "", note: "" });
+      renderLinks(L.length > i ? '[data-act="del"][data-i="' + i + '"]' : "#anadir");
+      if (L.length <= i) $("anadir").focus();
+      say(nm + " quitado.");
+    }
+    schedule(true);
+  });
+  $("anadir").addEventListener("click", function () {
+    state.links.push({ label: "", url: "", note: "" });
+    renderLinks("#lt" + (state.links.length - 1));
+    track("enlaces-anadir");
+    schedule(true);
+  });
+
+  /* ---------- Campos sencillos ---------- */
+  var elNombre = $("nombre"), elBio = $("bio"), elAlt = $("alt"), elIdioma = $("idioma");
+  function fillForm() {
+    elNombre.value = state.name; elBio.value = state.bio; elAlt.value = state.alt; elIdioma.value = state.lang;
+    var r = document.querySelector('input[name="tema"][value="' + state.theme + '"]'); if (r) r.checked = true;
+    var a = document.querySelector('input[name="alin"][value="' + state.align + '"]'); if (a) a.checked = true;
+    showPhoto();
+    renderLinks();
+  }
+  $("form").addEventListener("input", function (e) {
+    var t = e.target;
+    if (t === elNombre) state.name = t.value;
+    else if (t === elBio) state.bio = t.value;
+    else if (t === elAlt) state.alt = t.value;
+    else return;
+    schedule();
+  });
+  $("form").addEventListener("change", function (e) {
+    var t = e.target;
+    if (t.name === "tema") state.theme = t.value;
+    else if (t.name === "alin") state.align = t.value;
+    else if (t === elIdioma) state.lang = t.value;
+    else return;
+    schedule(true);
+  });
+
+  /* ---------- Foto ---------- */
+  function showPhoto() {
+    var has = !!state.photo;
+    $("fotoPrev").hidden = !has; if (has) $("fotoPrev").src = state.photo;
+    $("fotoQuitar").hidden = !has; $("altField").hidden = !has;
+    $("fotoTxt").textContent = has ? "Cambiar foto" : "Elegir foto";
+  }
+  $("foto").addEventListener("change", function () {
+    var f = this.files && this.files[0]; this.value = "";
+    if (!f) return;
+    var url = URL.createObjectURL(f), img = new Image();
+    img.onload = function () {
+      var S = 320, c = document.createElement("canvas"); c.width = S; c.height = S;
+      var ctx = c.getContext("2d"), s = Math.min(img.naturalWidth, img.naturalHeight);
+      ctx.fillStyle = "#ffffff"; ctx.fillRect(0, 0, S, S);
+      ctx.drawImage(img, (img.naturalWidth - s) / 2, (img.naturalHeight - s) / 2, s, s, 0, 0, S, S);
+      state.photo = c.toDataURL("image/jpeg", 0.85);
+      URL.revokeObjectURL(url);
+      showPhoto(); schedule(true); track("enlaces-foto");
+      say("Foto añadida. Puedes describirla en el campo siguiente.");
+    };
+    img.onerror = function () { URL.revokeObjectURL(url); setStatus("No he podido abrir esa imagen. Prueba con un JPG o PNG."); };
+    img.src = url;
+  });
+  $("fotoQuitar").addEventListener("click", function () { state.photo = ""; state.alt = ""; elAlt.value = ""; showPhoto(); schedule(true); $("foto").focus(); say("Foto quitada."); });
+
+  /* ---------- Render ---------- */
+  var elVista = $("vista"), elAvisos = $("avisos"), elEstado = $("estado");
+  function setStatus(t) { elEstado.textContent = t; }
+  function render() {
+    $("bioCuenta").textContent = state.bio.trim().length;
+    elVista.srcdoc = generate(true);
+    elAvisos.innerHTML = "";
+    avisos().forEach(function (a) {
+      var li = document.createElement("li");
+      if (typeof a === "object") { li.className = "ok"; li.textContent = a.t; } else li.textContent = a;
+      elAvisos.appendChild(li);
+    });
+  }
+  var timer = null;
+  function schedule(now) { clearTimeout(timer); timer = setTimeout(function () { render(); save(); }, now ? 0 : 250); }
+
+  /* ---------- Descargar y copiar ---------- */
+  function okLinks() { return state.links.filter(function (l) { return l.label.trim() && normUrl(l.url).ok; }).length; }
+  $("descargar").addEventListener("click", function () {
+    if (!state.name.trim() || !okLinks()) { setStatus("Antes de descargar, escribe tu nombre y al menos un enlace con texto y dirección."); elNombre.value ? $("lt0").focus() : elNombre.focus(); return; }
+    try {
+      var blob = new Blob([generate(false)], { type: "text/html;charset=utf-8" });
+      var a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = "index.html";
+      document.body.appendChild(a); a.click(); a.remove();
+      setTimeout(function () { URL.revokeObjectURL(a.href); }, 2000);
+      setStatus("Descargado como index.html. Abajo te explicamos cómo publicarlo gratis.");
+      track("enlaces-descargar", "Descargar HTML (" + okLinks() + " enlaces, " + state.theme + ")");
+    } catch (e) { setStatus("No se ha podido descargar. Prueba con «Copiar código» o con otro navegador."); track("enlaces-error-descarga"); }
+  });
+  $("copiar").addEventListener("click", function () {
+    var txt = generate(false);
+    function ok() { setStatus("Código copiado. Pégalo en un archivo llamado index.html."); }
+    function fail() { setStatus("No he podido copiar. Usa el botón de descargar."); }
+    try { navigator.clipboard.writeText(txt).then(ok, fail); } catch (e) { fail(); }
+    track("enlaces-copiar-codigo");
+  });
+
+  /* ---------- Abrir una página descargada ---------- */
+  $("abrir").addEventListener("change", function () {
+    var f = this.files && this.files[0]; this.value = "";
+    if (!f) return;
+    f.text().then(function (txt) {
+      var doc = new DOMParser().parseFromString(txt, "text/html");
+      var s = doc.getElementById("enlaces-legibles-datos");
+      if (!s) throw 0;
+      load(JSON.parse(s.textContent));
+      fillForm(); schedule(true);
+      setStatus("Página cargada. Ya puedes editarla.");
+      track("enlaces-abrir");
+      elNombre.focus();
+    }).catch(function () { setStatus("Ese archivo no es una página hecha con Enlaces legibles, o está dañado."); });
+  });
+
+  /* ---------- Ejemplo ---------- */
+  $("ejemplo").addEventListener("click", function () {
+    load({
+      name: "Ana Pérez",
+      bio: "UX Researcher. Escribo sobre investigación con personas y accesibilidad.",
+      photo: state.photo, alt: state.alt, theme: state.theme, align: state.align, lang: "es",
+      links: [
+        { label: "Mi boletín sobre investigación UX", url: "https://example.com/boletin", note: "Una carta al mes, sin ruido" },
+        { label: "Portfolio de casos", url: "example.com/portfolio", note: "" },
+        { label: "Pincha aquí", url: "https://example.com/charla", note: "" },
+        { label: "Escríbeme", url: "ana@example.com", note: "" }
+      ]
+    });
+    fillForm(); schedule(true); track("enlaces-ejemplo");
+    say("Ejemplo cargado con cuatro enlaces. Uno tiene un aviso a propósito.");
+  });
+
+  /* ---------- Pro ---------- */
+  document.querySelectorAll("[data-pro]").forEach(function (b) {
+    b.addEventListener("click", function () {
+      track(b.getAttribute("data-pro"));
+      var pro = $("pro"); pro.scrollIntoView({ behavior: "smooth", block: "start" }); pro.focus({ preventScroll: true });
+    });
+  });
+  $("proBtn").addEventListener("click", function () {
+    track("enlaces-pro-me-interesa", "Enlaces Pro: me interesa");
+    $("proGracias").hidden = false; this.disabled = true;
+  });
+
+  fillForm();
+  render();
+})();
+</script>
+<script data-goatcounter="https://jrebate.goatcounter.com/count" async src="https://gc.zgo.at/count.js"></script>
+</body>
+</html>
