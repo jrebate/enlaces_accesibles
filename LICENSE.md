@@ -12,7 +12,7 @@ Puedes insertar la herramienta publicada en tu web (por ejemplo, con un iframe o
 
 ## Las páginas que crees son tuyas
 
-Las páginas que generes con la herramienta, con tus textos, tu foto y tus enlaces, son tuyas: puedes usarlas, cambiarlas y publicarlas donde quieras, también con fines comerciales. Puedes quitar o mantener el aviso «Hecho con Enlaces legibles» de su pie.
+Las páginas que generes con la herramienta, con tus textos, tu foto y tus enlaces, son tuyas: puedes usarlas, cambiarlas y publicarlas donde quieras, también con fines comerciales.
 
 ## Qué no se permite sin permiso por escrito
 
